@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat-Rooms</title>
+</head>
+<body>
+    <form id="joinRoomForm" action="rooms.html" method="GET">
+        <label for="username">Username</label>
+        <input type="text" name="username" id="username" placeholder="Enter Username..." required>
+        <label for="roomCode">Room</label>
+        <input type="number" name="roomCode" id="roomCode" placeholder="Enter Code..." required>
+        <button type="submit" class="btn">Join Room</button>
+
+    </form>
+    <div>
+        <p>Available Rooms are :</p>
+        <ul class="roomsList" id="roomsList">
+            <li>1111</li>
+            <li>2222</li>
+            <li>3333</li>
+            <li>4444</li>
+        </ul>
+        <p>Enter any of the rooms above </p>
+    </div>
+    <!-- <script src="./main.js"></script>
+    <script src="../server.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/qs@6.10.1/dist/qs.min.js"></script>
+
+</body>
+
+</html>
