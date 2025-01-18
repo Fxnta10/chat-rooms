@@ -1,35 +1,40 @@
 const socket = io();
 
-// get username and room from URL
 const { username, roomCode } = Qs.parse(location.search, {
   ignoreQueryPrefix: true,
 });
 
-// whenever a user joins a room 
+const errorHandler = document.getElementById('error-handler');
+
 socket.emit('join-room', roomCode, username);
 
-// to display all the old data of the room to the user 
+socket.on('error', (msg) => {
+  errorHandler.innerText = msg;
+});
+
 socket.on('room-data', (room) => {
   const { messages, users } = room;
   displayAllMessages(messages);
   displayAllUsers(users);
 });
 
-// to display that the user joined 
 socket.on('user-joined', (username) => {
   outputMessage(`${username} has joined the room`);
   addUserToDisplay(username);
 });
 
+socket.on('user-left',(username)=>{
+  const msg=`${username}has left`
+  outputMessage(msg);
 
-//whenever a chat message is sent 
+})
+
+//handling chat messages 
 const chatForm = document.getElementById('chat-form');
 chatForm.addEventListener('submit', (e) => {
   e.preventDefault();
   const newMsg = document.getElementById('msg').value;
-
   socket.emit('new-message', newMsg, username, roomCode);
-
   document.getElementById('msg').value = '';
 });
 
@@ -38,14 +43,18 @@ socket.on('display-message', (message) => {
   outputMessage(msg);
 });
 
-//whenver a user leaves the room 
-const leaveForm=document.querySelector('#leaveButton')
-leaveForm.addEventListener('click',(e)=>{
-    e.preventDefault();
-    socket.emit('disconnect',username)
+
+//handling leave funcitons 
+const leaveForm = document.querySelector('#leaveButton');
+leaveForm.addEventListener('click', (e) => {
+  e.preventDefault();
+  socket.emit('leave-room', username, roomCode);
+  window.location.href = '/';
 });
 
-// all the function definations 
+
+
+//all the dependecy funcitnos 
 function outputMessage(msg) {
   const newMessage = document.createElement('p');
   newMessage.innerText = msg;
@@ -61,14 +70,14 @@ function displayAllMessages(messages) {
 }
 
 function displayAllUsers(users) {
-  const userList = document.getElementById('usersList');
-  userList.innerHTML = ''; 
+  const userList = document.querySelector('.usersList');
+  userList.innerHTML = '';
   users.forEach(addUserToDisplay);
 }
 
 function addUserToDisplay(user) {
   const newUser = document.createElement('li');
   newUser.innerText = user;
-  const userList = document.getElementById('usersList');
+  const userList = document.querySelector('.usersList');
   userList.appendChild(newUser);
 }
